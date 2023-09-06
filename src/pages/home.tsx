@@ -9,7 +9,7 @@ const tiers = [
         href: '#',
         price: {monthly: '$15', annually: '$12'},
         description: 'Everything necessary to get started.',
-        features: ['5 products', 'Up to 1,000 subscribers', 'Basic analytics', '48-hour support response time'],
+        features: ['1 Channel', '48-hour support response time'],
     },
     {
         name: 'Essential',
@@ -17,13 +17,7 @@ const tiers = [
         href: '#',
         price: {monthly: '$30', annually: '$24'},
         description: 'Everything in Basic, plus essential tools for growing your business.',
-        features: [
-            '25 products',
-            'Up to 10,000 subscribers',
-            'Advanced analytics',
-            '24-hour support response time',
-            'Marketing automations',
-        ],
+        features: ['5 Channel', '24-hour support response time'],
     },
     {
         name: 'Growth',
@@ -32,12 +26,8 @@ const tiers = [
         price: {monthly: '$60', annually: '$48'},
         description: 'Everything in Essential, plus collaboration tools and deeper insights.',
         features: [
-            'Unlimited products',
-            'Unlimited subscribers',
-            'Advanced analytics',
-            '1-hour, dedicated support response time',
-            'Marketing automations',
-            'Custom reporting tools',
+            'Unlimited Channels',
+            '1-hour, dedicated support response time'
         ],
     },
 ]

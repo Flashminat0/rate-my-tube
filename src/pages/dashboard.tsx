@@ -2,11 +2,11 @@ import ReactApexChart from 'react-apexcharts'
 
 const Dashboard = () => {
 
-    const state = {
+    const state1 = {
 
         series: [{
-            name: "Desktops",
-            data: [10, 41, 35, 51, 49, 62, 69, 91, 148]
+            name: "Percentage",
+            data: [13, 3, 9, 43, 8, 6, 9, 1, 14]
         }],
         options: {
             chart: {
@@ -23,7 +23,7 @@ const Dashboard = () => {
                 curve: 'straight'
             },
             title: {
-                text: 'Product Trends by Month',
+                text: 'Hate speech Probability over videos',
                 align: 'left'
             },
             grid: {
@@ -43,8 +43,8 @@ const Dashboard = () => {
     const state2 = {
 
         series: [{
-            name: "Count",
-            data: [10, 41, 35, 51, 49, 62, 69, 91, 148]
+            name: "Percentage",
+            data: [1, 41, 5, 5, 9, 2, 6, 41, 18]
         }],
         options: {
             chart: {
@@ -61,7 +61,7 @@ const Dashboard = () => {
                 curve: 'straight'
             },
             title: {
-                text: 'Deepfake probability',
+                text: 'Deepfake Probability over videos',
                 align: 'left'
             },
             grid: {
@@ -71,7 +71,81 @@ const Dashboard = () => {
                 },
             },
             xaxis: {
-                categories: ['20-12-2022', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+            }
+        },
+
+
+    };
+    const state3 = {
+
+        series: [{
+            name: "Percentage",
+            data: [70, 41, 85, 57, 92, 82, 79, 91, 54]
+        }],
+        options: {
+            chart: {
+                height: 350,
+                type: 'line',
+                zoom: {
+                    enabled: false
+                }
+            },
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                curve: 'straight'
+            },
+            title: {
+                text: 'Audio Similarity over videos',
+                align: 'left'
+            },
+            grid: {
+                row: {
+                    colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+                    opacity: 0.5
+                },
+            },
+            xaxis: {
+                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+            }
+        },
+
+
+    };
+    const state4 = {
+
+        series: [{
+            name: "Percentage",
+            data: [80, 41, 35, 31, 49, 62, 69, 91, 81]
+        }],
+        options: {
+            chart: {
+                height: 350,
+                type: 'line',
+                zoom: {
+                    enabled: false
+                }
+            },
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                curve: 'straight'
+            },
+            title: {
+                text: 'Video Similarity over videos',
+                align: 'left'
+            },
+            grid: {
+                row: {
+                    colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+                    opacity: 0.5
+                },
+            },
+            xaxis: {
+                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
             }
         },
 
@@ -79,7 +153,6 @@ const Dashboard = () => {
     };
 
 
-    // @ts-ignore
     return (
         <div>
             <div>
@@ -103,10 +176,10 @@ const Dashboard = () => {
             </div>
 
             <div className={`grid grid-cols-1 grid-rows-4 sm:grid-cols-2 sm:grid-rows-2 pt-10 gap-2`}>
-                <ReactApexChart options={state.options} series={state.series} type="line" height={350}/>
+                <ReactApexChart options={state1.options} series={state1.series} type="line" height={350}/>
                 <ReactApexChart options={state2.options} series={state2.series} type="line" height={350}/>
-                <ReactApexChart options={state.options} series={state.series} type="line" height={350}/>
-                <ReactApexChart options={state.options} series={state.series} type="line" height={350}/>
+                <ReactApexChart options={state3.options} series={state3.series} type="line" height={350}/>
+                <ReactApexChart options={state4.options} series={state4.series} type="line" height={350}/>
             </div>
         </div>
     );

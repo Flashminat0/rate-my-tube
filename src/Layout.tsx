@@ -1,7 +1,7 @@
 import {Disclosure, Menu, Transition} from "@headlessui/react";
 import {Bars3Icon, BellIcon, XMarkIcon} from "@heroicons/react/24/outline";
 import React, {Fragment, useEffect, useState} from "react";
-import {Outlet} from "react-router-dom";
+import {Outlet, useNavigate} from "react-router-dom";
 
 import {getAuth, GoogleAuthProvider, signInWithPopup} from "firebase/auth";
 // Import the functions you need from the SDKs you need
@@ -26,7 +26,8 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
 
-const Layout = (props) => {
+const Layout = () => {
+    const navigate = useNavigate();
     const [email, setEmail] = useState(null)
     const [photoURL, setPhotoURL] = useState(null)
     const [name, setName] = useState(null)
@@ -193,9 +194,12 @@ const Layout = (props) => {
                                             <div className="hidden md:block">
                                                 <div className="ml-10 flex items-baseline space-x-4">
                                                     {navigation.map((item) => (
-                                                        <a
+                                                        <button
                                                             key={item.name}
-                                                            href={item.href}
+                                                            // href={item.href}
+                                                            onClick={() => {
+                                                                navigate(item.href)
+                                                            }}
                                                             className={classNames(
                                                                 item.current
                                                                     ? 'bg-gray-900 text-white'
@@ -205,7 +209,7 @@ const Layout = (props) => {
                                                             aria-current={item.current ? 'page' : undefined}
                                                         >
                                                             {item.name}
-                                                        </a>
+                                                        </button>
                                                     ))}
                                                 </div>
                                             </div>
@@ -246,15 +250,18 @@ const Layout = (props) => {
                                                             {userNavigation.map((item) => (
                                                                 <Menu.Item key={item.name}>
                                                                     {({active}) => (
-                                                                        <a
-                                                                            href={item.href}
+                                                                        <button
+                                                                            // href={item.href}
+                                                                            onClick={() => {
+                                                                                navigate(item.href)
+                                                                            }}
                                                                             className={classNames(
                                                                                 active ? 'bg-gray-100' : '',
                                                                                 'block px-4 py-2 text-sm text-gray-700'
                                                                             )}
                                                                         >
                                                                             {item.name}
-                                                                        </a>
+                                                                        </button>
                                                                     )}
                                                                 </Menu.Item>
                                                             ))}
@@ -290,8 +297,11 @@ const Layout = (props) => {
                                         {navigation.map((item) => (
                                             <Disclosure.Button
                                                 key={item.name}
-                                                as="a"
-                                                href={item.href}
+                                                as="button"
+                                                // href={item.href}
+                                                onClick={() => {
+                                                    navigate(item.href)
+                                                }}
                                                 className={classNames(
                                                     item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                                                     'block rounded-md px-3 py-2 text-base font-medium'
@@ -326,8 +336,11 @@ const Layout = (props) => {
                                             {userNavigation.map((item) => (
                                                 <Disclosure.Button
                                                     key={item.name}
-                                                    as="a"
-                                                    href={item.href}
+                                                    as="button"
+                                                    // href={item.href}
+                                                    onClick={() => {
+                                                        navigate(item.href)
+                                                    }}
                                                     className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
                                                 >
                                                     {item.name}

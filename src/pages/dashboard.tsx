@@ -1,9 +1,12 @@
 import ReactApexChart from 'react-apexcharts'
+import {ApexOptions} from "apexcharts";
 
 const Dashboard = () => {
 
-    const state1 = {
-
+    const state1: {
+        series: ApexOptions['series'],
+        options: ApexOptions
+    } = {
         series: [{
             name: "Percentage",
             data: [13, 3, 9, 43, 8, 6, 9, 1, 14]
@@ -40,7 +43,10 @@ const Dashboard = () => {
 
     };
 
-    const state2 = {
+    const state2: {
+        series: ApexOptions['series'],
+        options: ApexOptions
+    } = {
 
         series: [{
             name: "Percentage",
@@ -77,7 +83,10 @@ const Dashboard = () => {
 
 
     };
-    const state3 = {
+    const state3: {
+        series: ApexOptions['series'],
+        options: ApexOptions
+    } = {
 
         series: [{
             name: "Percentage",
@@ -114,7 +123,10 @@ const Dashboard = () => {
 
 
     };
-    const state4 = {
+    const state4: {
+        series: ApexOptions['series'],
+        options: ApexOptions
+    } = {
 
         series: [{
             name: "Percentage",
@@ -176,7 +188,8 @@ const Dashboard = () => {
             </div>
 
             <div className={`grid grid-cols-1 grid-rows-4 sm:grid-cols-2 sm:grid-rows-2 pt-10 gap-2`}>
-                <ReactApexChart options={state1.options} series={state1.series} type="line" height={350}/>
+                <ReactApexChart
+                    options={state1.options} series={state1.series} type="line" height={350}/>
                 <ReactApexChart options={state2.options} series={state2.series} type="line" height={350}/>
                 <ReactApexChart options={state3.options} series={state3.series} type="line" height={350}/>
                 <ReactApexChart options={state4.options} series={state4.series} type="line" height={350}/>

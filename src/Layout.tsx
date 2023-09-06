@@ -158,7 +158,7 @@ const Layout = (props) => {
     const navigation2 = [
         {name: 'Home', href: '/', current: true},
         {name: 'Dashboard', href: '/dashboard', current: false},
-        {name: 'Team', href: '/team', current: false},
+        // {name: 'Team', href: '/team', current: false},
     ]
 
     const [navigation, setNavigation] = useState(navigation2)

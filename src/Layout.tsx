@@ -1,6 +1,8 @@
 import {Disclosure, Menu, Transition} from "@headlessui/react";
 import {Bars3Icon, BellIcon, XMarkIcon} from "@heroicons/react/24/outline";
 import React, {Fragment, useEffect, useState} from "react";
+import {Outlet} from "react-router-dom";
+
 import {getAuth, GoogleAuthProvider, signInWithPopup} from "firebase/auth";
 // Import the functions you need from the SDKs you need
 import {initializeApp} from "firebase/app";
@@ -30,6 +32,58 @@ const Layout = (props) => {
     const [name, setName] = useState(null)
 
     const provider = new GoogleAuthProvider();
+
+    const [isHome, setIsHome] = useState(false)
+    const [isDashboard, setIsDashboard] = useState(false)
+    const [isTeam, setIsTeam] = useState(false)
+    useEffect(() => {
+        if (window.location.href.includes('team')) {
+
+            setIsDashboard(false)
+            setIsHome(false)
+            setIsTeam(true)
+
+            setNavigation((prevState) => {
+                return prevState.map((item) => {
+                    if (item.name === 'Team') {
+                        return {...item, current: true}
+                    } else {
+                        return {...item, current: false}
+                    }
+                })
+            })
+        } else if (window.location.href.includes('dashboard')) {
+
+            setIsDashboard(true)
+            setIsHome(false)
+            setIsTeam(false)
+
+            setNavigation((prevState) => {
+                return prevState.map((item) => {
+                    if (item.name === 'Dashboard') {
+                        return {...item, current: true}
+                    } else {
+                        return {...item, current: false}
+                    }
+                })
+            })
+        } else {
+            setIsDashboard(false)
+            setIsHome(true)
+            setIsTeam(false)
+
+            setNavigation((prevState) => {
+                return prevState.map((item) => {
+                    if (item.name === 'Home') {
+                        return {...item, current: true}
+                    } else {
+                        return {...item, current: false}
+                    }
+                })
+            })
+        }
+
+    }, [window.location.href]);
 
 
     useEffect(() => {
@@ -77,6 +131,7 @@ const Layout = (props) => {
                 // This gives you a Google Access Token. You can use it to access the Google API.
                 const credential = GoogleAuthProvider.credentialFromResult(result);
                 const token = credential.accessToken;
+                console.log(!!token)
                 // The signed-in user info.
                 const user = result.user;
                 // IdP data available using getAdditionalUserInfo(result)
@@ -87,6 +142,7 @@ const Layout = (props) => {
                 setPhotoURL(user.photoURL)
                 setName(user.displayName)
             }).catch((error) => {
+            console.log(error)
             // Handle Errors here.
             // const errorCode = error.code;
             // const errorMessage = error.message;
@@ -99,25 +155,23 @@ const Layout = (props) => {
 
     }
 
-    const navigation = [
-        {name: 'Dashboard', href: '/', current: true},
+    const navigation2 = [
+        {name: 'Home', href: '/', current: true},
+        {name: 'Dashboard', href: '/dashboard', current: false},
         {name: 'Team', href: '/team', current: false},
     ]
+
+    const [navigation, setNavigation] = useState(navigation2)
+
     const userNavigation = [
         {name: 'Your Profile', href: '#'},
         {name: 'Settings', href: '#'},
-        {name: 'Sign out', href: '#'},
+        {name: 'Sign out', href: '/logout'},
     ]
 
     function classNames(...classes) {
         return classes.filter(Boolean).join(' ')
     }
-
-    interface user {
-        email: string,
-        imageUrl?: string,
-    }
-
 
     return (
         <div className={'h-full bg-gray-100'}>
@@ -298,11 +352,17 @@ const Layout = (props) => {
 
                     <header className="bg-white shadow">
                         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-                            <h1 className="text-3xl font-bold tracking-tight text-gray-900">Dashboard</h1>
+                            <h1 className="text-3xl font-bold tracking-tight text-gray-900">
+                                {isHome && 'Home'}
+                                {isDashboard && 'Dashboard'}
+                                {isTeam && 'Team'}
+                            </h1>
                         </div>
                     </header>
                     <main>
-                        <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">{props.children}</div>
+                        <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
+                            <Outlet/>
+                        </div>
                     </main>
                 </div>
             </div>

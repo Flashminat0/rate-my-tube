@@ -4,7 +4,8 @@ import Home from "./pages/home.tsx";
 import Dashboard from "./pages/dashboard.tsx";
 import NoMatch from "./pages/NoMatch.tsx";
 import Layout from "./Layout.tsx";
-
+import Team from "./pages/team.tsx";
+import Logout from "./pages/logout.tsx";
 
 function App() {
     return (
@@ -13,6 +14,8 @@ function App() {
                 <Route element={<Layout/>}>
                     <Route path="/" element={<Home/>}/>
                     <Route path="dashboard" element={<Dashboard/>}/>
+                    <Route path="team" element={<Team/>}/>
+                    <Route path="logout" element={<Logout/>}/>
 
                     {/* Using path="*"" means "match anything", so this route
                 acts like a catch-all for URLs that we don't have explicit

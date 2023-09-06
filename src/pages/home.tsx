@@ -2,8 +2,8 @@ import React from 'react'
 
 
 const Home = () => (
-    <div>
-        ASD
+    <div className={``}>
+adasdasads
     </div>
 );
 export default Home

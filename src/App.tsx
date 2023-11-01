@@ -1,6 +1,6 @@
 import {Route, Routes} from "react-router-dom";
 
-import Home from "./pages/home.tsx";
+import Pricing from "./pages/pricing.tsx";
 import Dashboard from "./pages/dashboard.tsx";
 import NoMatch from "./pages/NoMatch.tsx";
 import Layout from "./Layout.tsx";
@@ -11,8 +11,8 @@ function App() {
     return (
         <>
             <Routes>
-                <Route element={<Layout/>}>
-                    <Route path="/" element={<Home/>}/>
+                <Route element={<Layout/>} >
+                    <Route path="pricing" element={<Pricing/>}/>
                     <Route path="dashboard" element={<Dashboard/>}/>
                     <Route path="team" element={<Team/>}/>
                     <Route path="settings" element={<Settings/>}/>

@@ -3,27 +3,10 @@ import {Bars3Icon, BellIcon, XMarkIcon} from "@heroicons/react/24/outline";
 import React, {Fragment, useEffect, useState} from "react";
 import {Outlet, useLocation, useNavigate} from "react-router-dom";
 
-import {getAuth, GoogleAuthProvider, signInWithPopup} from "firebase/auth";
+import {GoogleAuthProvider, signInWithPopup} from "firebase/auth";
+import {firebaseAuth, firebaseDatabase, firebaseStorage} from "../firebase.ts";
 // Import the functions you need from the SDKs you need
-import {initializeApp} from "firebase/app";
-
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-const firebaseConfig = {
-    apiKey: "AIzaSyDhc-n3XNhebVtghToYabQBoXe24tiWNlY",
-    authDomain: "ratemytube.firebaseapp.com",
-    databaseURL: "https://ratemytube-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "ratemytube",
-    storageBucket: "ratemytube.appspot.com",
-    messagingSenderId: "24308797244",
-    appId: "1:24308797244:web:1ca372afb28ea0d5a75839"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+import {getDatabase, ref as dbRef, set} from "firebase/database";
 
 
 const Layout = () => {
@@ -131,7 +114,7 @@ const Layout = () => {
 
 
     const onLogin = () => {
-        signInWithPopup(auth, provider)
+        signInWithPopup(firebaseAuth, provider)
             .then((result) => {
                 // This gives you a Google Access Token. You can use it to access the Google API.
                 const credential = GoogleAuthProvider.credentialFromResult(result);
@@ -146,6 +129,9 @@ const Layout = () => {
                 setEmail(user.email)
                 setPhotoURL(user.photoURL)
                 setName(user.displayName)
+
+                loginHandler(user.displayName, user.email, user.photoURL)
+                
             }).catch((error) => {
             console.log(error)
             // Handle Errors here.
@@ -160,9 +146,25 @@ const Layout = () => {
 
     }
 
+    const loginHandler = async (
+        name: string,
+        email: string,
+        photoURL: string
+    ) => {
+        const emailID = email.split('@')[0]
+
+
+        await set(dbRef(firebaseDatabase, 'users/' + emailID), {
+            username: name,
+            email: email,
+            profile_picture: photoURL
+        });
+    }
+
+
     const navigation2 = [
-        {name: 'Home', href: '/', current: true},
         {name: 'Dashboard', href: '/dashboard', current: false},
+        {name: 'Pricing', href: '/pricing', current: true},
         // {name: 'Team', href: '/team', current: false},
     ]
 

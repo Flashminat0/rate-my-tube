@@ -1,7 +1,7 @@
 import {Disclosure, Menu, Transition} from "@headlessui/react";
 import {Bars3Icon, BellIcon, XMarkIcon} from "@heroicons/react/24/outline";
 import React, {Fragment, useEffect, useState} from "react";
-import {Outlet, useNavigate} from "react-router-dom";
+import {Outlet, useLocation, useNavigate} from "react-router-dom";
 
 import {getAuth, GoogleAuthProvider, signInWithPopup} from "firebase/auth";
 // Import the functions you need from the SDKs you need
@@ -28,6 +28,8 @@ const auth = getAuth(app);
 
 const Layout = () => {
     const navigate = useNavigate();
+    const location = useLocation()
+
     const [email, setEmail] = useState(null)
     const [photoURL, setPhotoURL] = useState(null)
     const [name, setName] = useState(null)
@@ -37,6 +39,8 @@ const Layout = () => {
     const [isHome, setIsHome] = useState(false)
     const [isDashboard, setIsDashboard] = useState(false)
     const [isTeam, setIsTeam] = useState(false)
+
+
     useEffect(() => {
         if (window.location.href.includes('team')) {
 
@@ -111,10 +115,10 @@ const Layout = () => {
     }, [email, photoURL]);
 
     useEffect(() => {
-        localStorage.getItem('email') && setEmail(localStorage.getItem('email'))
-        localStorage.getItem('photoURL') && setPhotoURL(localStorage.getItem('photoURL'))
-        localStorage.getItem('name') && setName(localStorage.getItem('name'))
-    }, []);
+        setEmail(localStorage.getItem('email'))
+        setPhotoURL(localStorage.getItem('photoURL'))
+        setName(localStorage.getItem('name'))
+    }, [location.pathname]);
 
 
     const useri = {
@@ -166,11 +170,11 @@ const Layout = () => {
 
     const userNavigation = [
         {name: 'Your Profile', href: '#'},
-        {name: 'Settings', href: '#'},
+        {name: 'Settings', href: '/settings'},
         {name: 'Sign out', href: '/logout'},
     ]
 
-    function classNames(...classes) {
+    function classNames(...classes: string[]) {
         return classes.filter(Boolean).join(' ')
     }
 
@@ -271,7 +275,7 @@ const Layout = () => {
                                                     onClick={onLogin}
                                                     className={classNames(
                                                         'bg-gray-900 text-white',
-                                                        'rounded-md px-3 py-2 text-sm font-medium ml-5'
+                                                        'rounded-md px-3 py-2 text-sm font-medium ml-5 cursor-pointer'
                                                     )}>Login</span>}
 
                                             </div>

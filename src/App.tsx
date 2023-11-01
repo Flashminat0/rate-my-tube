@@ -6,7 +6,7 @@ import NoMatch from "./pages/NoMatch.tsx";
 import Layout from "./Layout.tsx";
 import Team from "./pages/team.tsx";
 import Logout from "./pages/logout.tsx";
-
+import Settings from "./pages/settings.tsx";
 function App() {
     return (
         <>
@@ -15,6 +15,7 @@ function App() {
                     <Route path="/" element={<Home/>}/>
                     <Route path="dashboard" element={<Dashboard/>}/>
                     <Route path="team" element={<Team/>}/>
+                    <Route path="settings" element={<Settings/>}/>
                     <Route path="logout" element={<Logout/>}/>
 
                     {/* Using path="*"" means "match anything", so this route

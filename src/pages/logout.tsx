@@ -9,8 +9,6 @@ const Logout = () => {
         localStorage.removeItem('name');
         localStorage.removeItem('photoURL');
 
-
-
         navigate('/')
     }, []);
 

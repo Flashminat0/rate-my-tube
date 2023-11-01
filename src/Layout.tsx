@@ -6,7 +6,7 @@ import {Outlet, useLocation, useNavigate} from "react-router-dom";
 import {GoogleAuthProvider, signInWithPopup} from "firebase/auth";
 import {firebaseAuth, firebaseDatabase, firebaseStorage} from "../firebase.ts";
 // Import the functions you need from the SDKs you need
-import {getDatabase, ref as dbRef, set} from "firebase/database";
+import {getDatabase, ref as dbRef, set, child, get} from "firebase/database";
 
 
 const Layout = () => {
@@ -25,7 +25,7 @@ const Layout = () => {
 
 
     useEffect(() => {
-        if (window.location.href.includes('team')) {
+        if (location.pathname.includes('team')) {
 
             setIsDashboard(false)
             setIsHome(false)
@@ -40,7 +40,7 @@ const Layout = () => {
                     }
                 })
             })
-        } else if (window.location.href.includes('dashboard')) {
+        } else if (location.pathname.includes('dashboard')) {
 
             setIsDashboard(true)
             setIsHome(false)
@@ -71,7 +71,7 @@ const Layout = () => {
             })
         }
 
-    }, [window.location.href]);
+    }, [location.pathname]);
 
 
     useEffect(() => {
@@ -98,9 +98,9 @@ const Layout = () => {
     }, [email, photoURL]);
 
     useEffect(() => {
-        setEmail(localStorage.getItem('email'))
-        setPhotoURL(localStorage.getItem('photoURL'))
-        setName(localStorage.getItem('name'))
+        setEmail(localStorage.getItem('email') || null)
+        setPhotoURL(localStorage.getItem('photoURL') || null)
+        setName(localStorage.getItem('name') || null)
     }, [location.pathname]);
 
 
@@ -131,7 +131,7 @@ const Layout = () => {
                 setName(user.displayName)
 
                 loginHandler(user.displayName, user.email, user.photoURL)
-                
+
             }).catch((error) => {
             console.log(error)
             // Handle Errors here.
@@ -153,12 +153,20 @@ const Layout = () => {
     ) => {
         const emailID = email.split('@')[0]
 
+        const ref = dbRef(firebaseDatabase, 'users/' + emailID);
 
-        await set(dbRef(firebaseDatabase, 'users/' + emailID), {
-            username: name,
-            email: email,
-            profile_picture: photoURL
-        });
+        get(child(ref, `/`)).then(async (snapshot) => {
+            if (snapshot.exists()) {
+                console.log(snapshot.val());
+            } else {
+                await set(ref, {
+                    username: name,
+                    email: email,
+                    profile_picture: photoURL,
+                    plan: 'None'
+                });
+            }
+        })
     }
 
 

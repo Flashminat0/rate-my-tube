@@ -10,6 +10,14 @@ import {getDatabase, ref as dbRef, set, child, get} from "firebase/database";
 import SimpleModal from "../components/simpleModal.tsx";
 
 
+interface USER {
+    username: string,
+    email: string,
+    profile_picture: string,
+    plan: string,
+    channels: string[]
+}
+
 const Layout = () => {
     const navigate = useNavigate();
     const location = useLocation()
@@ -147,6 +155,9 @@ const Layout = () => {
 
     }
 
+
+    const [newUser, setNewUser] = useState<USER>()
+
     const loginHandler = async (
         name: string,
         email: string,
@@ -158,14 +169,27 @@ const Layout = () => {
 
         get(child(ref, `/`)).then(async (snapshot) => {
             if (snapshot.exists()) {
-                console.log(snapshot.val());
+                setNewUser({
+                    ...snapshot.val(),
+                    channels: snapshot.val().channels || []
+                });
+
             } else {
                 await set(ref, {
                     username: name,
                     email: email,
                     profile_picture: photoURL,
-                    plan: 'None'
+                    plan: 'None',
+                    channels: []
                 });
+
+                setNewUser({
+                    username: name,
+                    email: email,
+                    profile_picture: photoURL,
+                    plan: 'None',
+                    channels: []
+                })
             }
         })
     }
@@ -219,6 +243,7 @@ const Layout = () => {
                 if (snapshot.exists()) {
                     console.log(snapshot.val());
 
+
                 } else {
                     setCanAddChannel(true)
                 }
@@ -257,8 +282,103 @@ const Layout = () => {
         setOpen(false);
     };
 
+    const handleAddChannel = () => {
 
-    const [modelOpen, setModelOpen] = useState(false)
+        const alreadyDoneChannels = newUser.channels.length
+
+        if (plan === 'None') {
+            alert('Please upgrade your plan to add a channel')
+            return;
+        }
+
+        if (plan === 'Basic') {
+            if (alreadyDoneChannels >= 1) {
+                alert('Please upgrade your plan to add a channel')
+                return
+            }
+        }
+
+        if (plan === 'Essential') {
+            if (alreadyDoneChannels >= 5) {
+                alert('Please upgrade your plan to add a channel')
+                return;
+            }
+        }
+
+        if (plan === 'Growth') {
+            // alert('Please upgrade your plan to add a channel')
+        }
+
+        addChannelIDtoDB()
+        addChannelToUser(channelID)
+
+        setChannelID('')
+    }
+
+
+    const addChannelIDtoDB = async () => {
+        const emailID = email.split('@')[0]
+
+        const channelRef = dbRef(firebaseDatabase, 'channels/' + channelID);
+
+        get(child(channelRef, `/`)).then(async (snapshot) => {
+            if (snapshot.exists()) {
+                console.log(snapshot.val());
+
+
+            } else {
+                await set(channelRef, {
+                    ready: false,
+                    data: [
+                        {
+                            name: "Hate Speech",
+                            data: [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                            categories: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+                        },
+                        {
+                            name: "Deep Fake",
+                            data: [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                            categories: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+                        },
+                        {
+                            name: "Audio Matching Level",
+                            data: [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                            categories: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+                        },
+                        {
+                            name: "Video Matching Level",
+                            data: [0, 0, 0, 0, 0, 0, 0, 0, 0],
+                            categories: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+                        }
+                    ]
+                })
+
+
+            }
+        });
+    }
+
+    const addChannelToUser = async (channelID: string) => {
+        const emailID = email.split('@')[0]
+
+        const ref = dbRef(firebaseDatabase, 'users/' + emailID);
+
+        await set(ref, {
+            ...newUser,
+            channels: [
+                ...newUser.channels,
+                channelID
+            ]
+        });
+
+        get(child(ref, `/`)).then(async (snapshot) => {
+            if (snapshot.exists()) {
+                setNewUser(snapshot.val())
+            }
+        })
+
+
+    }
 
     return (
         <div className={'h-full bg-gray-100'}>
@@ -458,7 +578,6 @@ const Layout = () => {
                             </h1>
                             {isDashboard && isWorthy && <span
                                 onClick={() => {
-                                    setModelOpen(true)
                                     handleClickOpen()
                                 }}
                                 className={classNames(
@@ -468,14 +587,59 @@ const Layout = () => {
                             </span>}
                         </div>
                     </header>
+                    {isDashboard && <>
+                        <header className="bg-white shadow">
+                            <div className="mx-auto max-w-7xl px-4 pb-6 sm:px-6 lg:px-8 flex">
+                                <p>asdas</p>
+                                <p>asdas</p><p>asdas</p><p>asdas</p><p>asdas</p>
+                            </div>
+                        </header>
+                    </>
+                    }
                     <main>
                         <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
                             <>
                                 <SimpleModal
                                     open={open}
                                     onClose={handleClose}>
-                                    <div>
-                                        {plan}
+                                    <div className={`w-[30vw] p-4 m-2 flex flex-col space-y-4`}>
+                                        <div>
+                                            <label htmlFor="channel"
+                                                   className="block text-base font-medium leading-6 text-gray-900">
+                                                Channel ID
+                                            </label>
+                                            <div className="mt-2">
+                                                <input
+                                                    onChange={(e) => {
+                                                        setChannelID(e.target.value)
+                                                    }}
+                                                    type="channel"
+                                                    name="channel"
+                                                    id="channel"
+                                                    className="block w-full rounded-md pl-4 border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-red-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-red-600 sm:text-sm sm:leading-6"
+                                                    placeholder="Channel ID Here"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className={'flex flex-row justify-between'}>
+                                            <button
+                                                onClick={handleClose}
+                                                type="button"
+                                                className="rounded-md bg-red-500 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-red-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500"
+                                            >
+                                                Cancel
+                                            </button>
+                                            <button
+                                                onClick={() => {
+                                                    channelID.trim().length > 0 && handleAddChannel()
+                                                }}
+                                                type="button"
+                                                className="rounded-md bg-red-500 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-red-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500"
+                                            >
+                                                Add Channel
+                                            </button>
+                                        </div>
                                     </div>
 
                                 </SimpleModal>

@@ -50,13 +50,8 @@ const Pricing = () => {
 
             get(child(userRef, `/`)).then(async (snapshot) => {
                 if (snapshot.exists()) {
-
-                    const {username, email, profile_picture} = snapshot.val()
-
                     await set(userRef, {
-                        username: username,
-                        email: email,
-                        profile_picture: profile_picture,
+                        ...snapshot.val(),
                         plan: plan
                     });
                 } else {

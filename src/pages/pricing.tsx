@@ -44,7 +44,7 @@ const Pricing = () => {
 
     const setPlan = (plan: string) => {
         if (email) {
-            const emailID = email.split('@')[0]
+            const emailID = email.split('@')[0].replace('.', '')
 
             const userRef = dbRef(firebaseDatabase, 'users/' + emailID);
 

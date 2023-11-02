@@ -193,7 +193,7 @@ const Dashboard = () => {
             return;
         }
 
-        const emailID = email.split('@')[0]
+        const emailID = email.split('@')[0].replace('.', '')
 
         if (emailID === null) {
             return;

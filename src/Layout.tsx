@@ -160,7 +160,7 @@ const Layout = () => {
 
     useEffect(() => {
         if (email) {
-            const emailID = email.split('@')[0]
+            const emailID = email.split('@')[0].replace('.', '')
 
             const ref = dbRef(firebaseDatabase, 'users/' + emailID);
 
@@ -185,7 +185,7 @@ const Layout = () => {
         email: string,
         photoURL: string
     ) => {
-        const emailID = email.split('@')[0]
+        const emailID = email.split('@')[0].replace('.', '')
 
         const ref = dbRef(firebaseDatabase, 'users/' + emailID);
 
@@ -226,7 +226,7 @@ const Layout = () => {
     const [plan, setPlan] = useState('None')
 
     const handleIsWorthy = () => {
-        const emailID = email.split('@')[0]
+        const emailID = email.split('@')[0].replace('.', '')
 
         const ref = dbRef(firebaseDatabase, 'users/' + emailID);
 
@@ -257,7 +257,7 @@ const Layout = () => {
 
     const handleCanAddChannel = () => {
         if (isWorthy && email) {
-            const emailID = email.split('@')[0]
+            const emailID = email.split('@')[0].replace('.', '')
 
             const channelRef = dbRef(firebaseDatabase, 'channels/' + emailID);
 
@@ -305,7 +305,7 @@ const Layout = () => {
     };
 
     const handleAddChannel = () => {
-        const emailID = email.split('@')[0]
+        const emailID = email.split('@')[0].replace('.', '')
 
         const ref = dbRef(firebaseDatabase, 'users/' + emailID);
 
@@ -359,7 +359,7 @@ const Layout = () => {
 
 
     const addChannelIDtoDB = async () => {
-        const emailID = email.split('@')[0]
+        const emailID = email.split('@')[0].replace('.', '')
 
         const channelRef = dbRef(firebaseDatabase, 'channels/' + channelID);
 
@@ -401,7 +401,7 @@ const Layout = () => {
     }
 
     const addChannelToUser = async (channelID: string) => {
-        const emailID = email.split('@')[0]
+        const emailID = email.split('@')[0].replace('.', '')
 
         const ref = dbRef(firebaseDatabase, 'users/' + emailID);
 

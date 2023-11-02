@@ -238,6 +238,10 @@ const Dashboard = () => {
                 })
                 setChannels(tempChannels);
 
+                if (tempChannels.length > 0) {
+                    setSelectedChannel(tempChannels[0])
+                }
+
             } else {
 
             }
@@ -315,12 +319,15 @@ const Dashboard = () => {
                 </header>
             </>
 
-            <div className={`grid grid-cols-1 grid-rows-4 sm:grid-cols-2 sm:grid-rows-2 pt-10 gap-2`}>
-                <ReactApexChart options={state1.options} series={state1.series} type="line" height={350} />
-                <ReactApexChart options={state2.options} series={state2.series} type="line" height={350} />
-                <ReactApexChart options={state3.options} series={state3.series} type="line" height={350} />
-                <ReactApexChart options={state4.options} series={state4.series} type="line" height={350} />
-            </div>
+            {channels.length === 0 ? <>
+            </> : <>
+                <div className={`grid grid-cols-1 grid-rows-4 sm:grid-cols-2 sm:grid-rows-2 pt-10 gap-2`}>
+                    <ReactApexChart options={state1.options} series={state1.series} type="line" height={350} />
+                    <ReactApexChart options={state2.options} series={state2.series} type="line" height={350} />
+                    <ReactApexChart options={state3.options} series={state3.series} type="line" height={350} />
+                    <ReactApexChart options={state4.options} series={state4.series} type="line" height={350} />
+                </div>
+            </>}
         </div>
     );
 

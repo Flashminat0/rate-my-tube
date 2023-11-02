@@ -256,7 +256,7 @@ const Layout = () => {
     const [canAddChannel, setCanAddChannel] = useState(false)
 
     const handleCanAddChannel = () => {
-        if (isWorthy) {
+        if (isWorthy && email) {
             const emailID = email.split('@')[0]
 
             const channelRef = dbRef(firebaseDatabase, 'channels/' + emailID);

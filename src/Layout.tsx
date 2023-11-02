@@ -171,35 +171,36 @@ const Layout = () => {
     }
 
     useEffect(() => {
-        handleIsWorthy()
-    }, [location.pathname]);
+        if (email) {
+            handleIsWorthy()
+        }
+    }, [location.pathname, email]);
 
     const [isWorthy, setIsWorthy] = useState(false)
     const [plan, setPlan] = useState('None')
 
     const handleIsWorthy = () => {
-        if (email) {
-            const emailID = email.split('@')[0]
+        const emailID = email.split('@')[0]
 
-            const ref = dbRef(firebaseDatabase, 'users/' + emailID);
+        const ref = dbRef(firebaseDatabase, 'users/' + emailID);
 
-            get(child(ref, `/`)).then(async (snapshot) => {
-                if (snapshot.exists()) {
-                    const {username, email, profile_picture, plan} = snapshot.val()
+        get(child(ref, `/`)).then(async (snapshot) => {
+            if (snapshot.exists()) {
+                const {username, email, profile_picture, plan} = snapshot.val()
 
-                    setPlan(plan)
+                setPlan(plan)
 
-                    if (plan === 'None') {
-                        setIsWorthy(false)
-                    } else {
-                        setIsWorthy(true)
-                    }
 
+                if (plan === 'None') {
+                    setIsWorthy(false)
                 } else {
-
+                    setIsWorthy(true)
                 }
-            })
-        }
+
+            } else {
+
+            }
+        })
     }
 
     useEffect(() => {
@@ -245,7 +246,7 @@ const Layout = () => {
     }
 
     const [open, setOpen] = useState(false);
-    const [channelID , setChannelID] = useState('')
+    const [channelID, setChannelID] = useState('')
 
 
     const handleClickOpen = () => {
@@ -471,10 +472,10 @@ const Layout = () => {
                         <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
                             <>
                                 <SimpleModal
-                                             open={open}
-                                             onClose={handleClose}>
+                                    open={open}
+                                    onClose={handleClose}>
                                     <div>
-                                        asdasdada
+                                        {plan}
                                     </div>
 
                                 </SimpleModal>

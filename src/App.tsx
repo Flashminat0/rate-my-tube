@@ -7,11 +7,13 @@ import Layout from "./Layout.tsx";
 import Team from "./pages/team.tsx";
 import Logout from "./pages/logout.tsx";
 import Settings from "./pages/settings.tsx";
+import Home from "./pages/home.tsx";
 function App() {
     return (
         <>
             <Routes>
                 <Route element={<Layout/>} >
+                    <Route path="/" element={<Home/>}/>
                     <Route path="pricing" element={<Pricing/>}/>
                     <Route path="dashboard" element={<Dashboard/>}/>
                     <Route path="team" element={<Team/>}/>

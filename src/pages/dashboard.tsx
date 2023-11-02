@@ -320,6 +320,15 @@ const Dashboard = () => {
             </>
 
             {channels.length === 0 ? <>
+                <div className="bg-indigo-100">
+                    <div className="mx-auto max-w-7xl px-6 py-24 sm:py-32 lg:flex lg:items-center lg:justify-between lg:px-8">
+                        <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+                            Ready to dive in?
+                            <br />
+                            Add A Channel to get started.
+                        </h2>
+                    </div>
+                </div>
             </> : <>
                 <div className={`grid grid-cols-1 grid-rows-4 sm:grid-cols-2 sm:grid-rows-2 pt-10 gap-2`}>
                     <ReactApexChart options={state1.options} series={state1.series} type="line" height={350} />

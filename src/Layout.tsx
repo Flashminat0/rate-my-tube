@@ -365,7 +365,6 @@ const Layout = () => {
 
         get(child(channelRef, `/`)).then(async (snapshot) => {
             if (snapshot.exists()) {
-                console.log(snapshot.val());
 
 
             } else {

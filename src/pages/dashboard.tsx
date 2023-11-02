@@ -1,5 +1,19 @@
 import ReactApexChart from 'react-apexcharts'
 import {ApexOptions} from "apexcharts";
+import React, {useEffect, useState} from "react";
+import {ref as dbRef} from "@firebase/database";
+import {firebaseDatabase} from "../../firebase.ts";
+import {child, get, onValue} from "firebase/database";
+
+interface CHANNEL {
+    name: string,
+    ready: boolean,
+    data: {
+        categories: number[],
+        data: number[],
+        name: string
+    }[]
+}
 
 const Dashboard = () => {
 
@@ -160,32 +174,85 @@ const Dashboard = () => {
                 categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
             }
         },
-
-
     };
+
+    const [selectedChannel, setSelectedChannel] = useState('')
+    const [channels, setChannels] = useState<CHANNEL[]>([])
+
+    useEffect(() => {
+        getChannelList()
+    }, []);
+
+
+    const [ownedChannels, setOwnedChannels] = useState<string[]>([])
+
+    const getChannelList = () => {
+        const emailID = localStorage.getItem('email').split('@')[0]
+
+        if (emailID === null) {
+            return;
+        }
+
+
+        const userRef = dbRef(firebaseDatabase, 'users/' + emailID);
+        get(child(userRef, '/channels')).then((snapshot) => {
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+                const channelList: string[] = Object.keys(data).map((key, index) => {
+                    return data[key]
+                })
+                setOwnedChannels(channelList)
+            } else {
+                console.log("No data available");
+            }
+
+        })
+
+
+        const channelRef = dbRef(firebaseDatabase, 'channels/');
+
+        onValue(channelRef, (snapshot) => {
+            const data = snapshot.val();
+            if (snapshot.exists()) {
+
+
+                const channelListMaps: CHANNEL[] = Object.keys(snapshot.val()).map((key, index): CHANNEL => {
+                    const convertingChannel: CHANNEL = {
+                        name: key,
+                        ready: snapshot.val()[key].ready,
+                        data: snapshot.val()[key].data,
+                    } as CHANNEL
+
+                    if (ownedChannels.includes(convertingChannel.name)) {
+                        return convertingChannel;
+                    }
+
+                })
+
+                setChannels(channelListMaps)
+
+
+            } else {
+
+            }
+        });
+    }
 
 
     return (
         <div>
-            <div>
-                <label htmlFor="search" className="block text-sm font-medium leading-6 text-gray-900">
-                    Quick search
-                </label>
-                <div className="relative mt-2 flex items-center">
-                    <input
-                        type="text"
-                        name="search"
-                        id="search"
-                        className="block w-full rounded-md border-0 py-1.5 pr-14 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-red-600 sm:text-sm sm:leading-6"
-                    />
-                    <div className="absolute inset-y-0 right-0 flex py-1.5 pr-1.5">
-                        <kbd
-                            className="inline-flex items-center rounded border border-gray-200 px-1 font-sans text-xs text-gray-400">
-                            Search
-                        </kbd>
+            <>
+                <header className="bg-white shadow">
+                    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 flex">
+                        {channels.map((channel, index) => {
+                            return <span key={index}
+                                         className="cursor-pointer inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">
+                                {/*{channel.name}*/}
+                            </span>
+                        })}
                     </div>
-                </div>
-            </div>
+                </header>
+            </>
 
             <div className={`grid grid-cols-1 grid-rows-4 sm:grid-cols-2 sm:grid-rows-2 pt-10 gap-2`}>
                 <ReactApexChart

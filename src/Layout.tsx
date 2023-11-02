@@ -158,6 +158,28 @@ const Layout = () => {
 
     const [newUser, setNewUser] = useState<USER>()
 
+    useEffect(() => {
+        if (email) {
+            const emailID = email.split('@')[0]
+
+            const ref = dbRef(firebaseDatabase, 'users/' + emailID);
+
+            get(child(ref, `/`)).then(async (snapshot) => {
+                if (snapshot.exists()) {
+                    if (snapshot.val().channels) {
+                        setNewUser(snapshot.val())
+                    } else {
+                        setNewUser({
+                            ...snapshot.val(),
+                            channels: []
+                        })
+                    }
+
+                }
+            })
+        }
+    }, [email])
+
     const loginHandler = async (
         name: string,
         email: string,
@@ -283,36 +305,56 @@ const Layout = () => {
     };
 
     const handleAddChannel = () => {
+        const emailID = email.split('@')[0]
 
-        const alreadyDoneChannels = newUser.channels.length
+        const ref = dbRef(firebaseDatabase, 'users/' + emailID);
 
-        if (plan === 'None') {
-            alert('Please upgrade your plan to add a channel')
-            return;
-        }
+        get(child(ref, `/`)).then(async (snapshot) => {
+            if (snapshot.exists()) {
 
-        if (plan === 'Basic') {
-            if (alreadyDoneChannels >= 1) {
-                alert('Please upgrade your plan to add a channel')
+                let alreadyDoneChannels = 0
+
+                if (snapshot.val().channels) {
+                    alreadyDoneChannels = snapshot.val().channels.length
+                } else {
+                    alreadyDoneChannels = 0
+                }
+
+
+                if (plan === 'None') {
+                    alert('Please upgrade your plan to add a channel')
+                    return;
+                }
+
+                if (plan === 'Basic') {
+                    if (alreadyDoneChannels >= 1) {
+                        alert('Please upgrade your plan to add a channel')
+                        return
+                    }
+                }
+
+                if (plan === 'Essential') {
+                    if (alreadyDoneChannels >= 5) {
+                        alert('Please upgrade your plan to add a channel')
+                        return;
+                    }
+                }
+
+                if (plan === 'Growth') {
+                    // alert('Please upgrade your plan to add a channel')
+                }
+
+                addChannelIDtoDB()
+                addChannelToUser(channelID)
+
+                setChannelID('')
+
+            } else {
                 return
             }
-        }
+        })
 
-        if (plan === 'Essential') {
-            if (alreadyDoneChannels >= 5) {
-                alert('Please upgrade your plan to add a channel')
-                return;
-            }
-        }
 
-        if (plan === 'Growth') {
-            // alert('Please upgrade your plan to add a channel')
-        }
-
-        addChannelIDtoDB()
-        addChannelToUser(channelID)
-
-        setChannelID('')
     }
 
 
@@ -363,10 +405,12 @@ const Layout = () => {
 
         const ref = dbRef(firebaseDatabase, 'users/' + emailID);
 
+        const existingChannels = newUser.channels || []
+
         await set(ref, {
             ...newUser,
             channels: [
-                ...newUser.channels,
+                ...existingChannels,
                 channelID
             ]
         });
@@ -587,15 +631,7 @@ const Layout = () => {
                             </span>}
                         </div>
                     </header>
-                    {isDashboard && <>
-                        <header className="bg-white shadow">
-                            <div className="mx-auto max-w-7xl px-4 pb-6 sm:px-6 lg:px-8 flex">
-                                <p>asdas</p>
-                                <p>asdas</p><p>asdas</p><p>asdas</p><p>asdas</p>
-                            </div>
-                        </header>
-                    </>
-                    }
+
                     <main>
                         <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
                             <>

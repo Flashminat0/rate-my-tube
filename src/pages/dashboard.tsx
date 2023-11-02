@@ -309,7 +309,7 @@ const Dashboard = () => {
     return (
         <div>
             <>
-                <header className="bg-white shadow">
+                {channels.length > 0 && <header className="bg-white shadow">
                     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 flex space-x-1">
                         {channels.map((channel, index) => {
                             return <span
@@ -317,20 +317,21 @@ const Dashboard = () => {
                                     setSelectedChannel(channel)
                                 }}
                                 key={index}
-                                         className=" cursor-pointer inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">
+                                className=" cursor-pointer inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">
                                 {channel.name}
                             </span>
                         })}
                     </div>
-                </header>
+                </header>}
             </>
 
             {channels.length === 0 ? <>
                 <div className="bg-indigo-100">
-                    <div className="mx-auto max-w-7xl px-6 py-24 sm:py-32 lg:flex lg:items-center lg:justify-between lg:px-8">
+                    <div
+                        className="mx-auto max-w-7xl px-6 py-24 sm:py-32 lg:flex lg:items-center lg:justify-between lg:px-8">
                         <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
                             Ready to dive in?
-                            <br />
+                            <br/>
                             Add A Channel to get started.
                         </h2>
                     </div>
@@ -338,12 +339,12 @@ const Dashboard = () => {
             </> : <>
                 {selectedChannel.ready ? <>
                     <div className={`grid grid-cols-1 grid-rows-4 sm:grid-cols-2 sm:grid-rows-2 pt-10 gap-2`}>
-                        <ReactApexChart options={state1.options} series={state1.series} type="line" height={350} />
-                        <ReactApexChart options={state2.options} series={state2.series} type="line" height={350} />
-                        <ReactApexChart options={state3.options} series={state3.series} type="line" height={350} />
-                        <ReactApexChart options={state4.options} series={state4.series} type="line" height={350} />
+                        <ReactApexChart options={state1.options} series={state1.series} type="line" height={350}/>
+                        <ReactApexChart options={state2.options} series={state2.series} type="line" height={350}/>
+                        <ReactApexChart options={state3.options} series={state3.series} type="line" height={350}/>
+                        <ReactApexChart options={state4.options} series={state4.series} type="line" height={350}/>
                     </div>
-                </> : <div  className={`grid place-items-center py-32`}>
+                </> : <div className={`grid place-items-center py-32`}>
                     <img src="/loader.gif   " alt="loader"/>
                 </div>}
             </>}

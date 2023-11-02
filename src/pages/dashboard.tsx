@@ -187,7 +187,13 @@ const Dashboard = () => {
     const [ownedChannels, setOwnedChannels] = useState<string[]>([])
 
     const getOwnedChannelList = () => {
-        const emailID = localStorage.getItem('email').split('@')[0]
+        const email = localStorage.getItem('email')
+
+        if (email === null) {
+            return;
+        }
+
+        const emailID = email.split('@')[0]
 
         if (emailID === null) {
             return;

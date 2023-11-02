@@ -7,6 +7,7 @@ import {GoogleAuthProvider, signInWithPopup} from "firebase/auth";
 import {firebaseAuth, firebaseDatabase, firebaseStorage} from "../firebase.ts";
 // Import the functions you need from the SDKs you need
 import {getDatabase, ref as dbRef, set, child, get} from "firebase/database";
+import SimpleModal from "../components/simpleModal.tsx";
 
 
 const Layout = () => {
@@ -169,6 +170,61 @@ const Layout = () => {
         })
     }
 
+    useEffect(() => {
+        handleIsWorthy()
+    }, [location.pathname]);
+
+    const [isWorthy, setIsWorthy] = useState(false)
+    const [plan, setPlan] = useState('None')
+
+    const handleIsWorthy = () => {
+        if (email) {
+            const emailID = email.split('@')[0]
+
+            const ref = dbRef(firebaseDatabase, 'users/' + emailID);
+
+            get(child(ref, `/`)).then(async (snapshot) => {
+                if (snapshot.exists()) {
+                    const {username, email, profile_picture, plan} = snapshot.val()
+
+                    setPlan(plan)
+
+                    if (plan === 'None') {
+                        setIsWorthy(false)
+                    } else {
+                        setIsWorthy(true)
+                    }
+
+                } else {
+
+                }
+            })
+        }
+    }
+
+    useEffect(() => {
+        isWorthy && handleCanAddChannel()
+    }, [isWorthy]);
+
+    const [canAddChannel, setCanAddChannel] = useState(false)
+
+    const handleCanAddChannel = () => {
+        if (isWorthy) {
+            const emailID = email.split('@')[0]
+
+            const channelRef = dbRef(firebaseDatabase, 'channels/' + emailID);
+
+            get(child(channelRef, `/`)).then(async (snapshot) => {
+                if (snapshot.exists()) {
+                    console.log(snapshot.val());
+
+                } else {
+                    setCanAddChannel(true)
+                }
+            })
+        }
+    }
+
 
     const navigation2 = [
         {name: 'Dashboard', href: '/dashboard', current: false},
@@ -188,6 +244,21 @@ const Layout = () => {
         return classes.filter(Boolean).join(' ')
     }
 
+    const [open, setOpen] = useState(false);
+    const [channelID , setChannelID] = useState('')
+
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+
+    const [modelOpen, setModelOpen] = useState(false)
+
     return (
         <div className={'h-full bg-gray-100'}>
             <div className={`h-full`}>
@@ -201,7 +272,7 @@ const Layout = () => {
                                             <div className="flex-shrink-0">
                                                 <img
                                                     className="h-8 w-8"
-                                                    src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
+                                                    src="https://tailwindui.com/img/logos/mark.svg?color=red&shade=500"
                                                     alt="Your Company"
                                                 />
                                             </div>
@@ -378,16 +449,37 @@ const Layout = () => {
                     </Disclosure>
 
                     <header className="bg-white shadow">
-                        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+                        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 flex justify-between">
                             <h1 className="text-3xl font-bold tracking-tight text-gray-900">
                                 {isHome && 'Home'}
                                 {isDashboard && 'Dashboard'}
                                 {isTeam && 'Team'}
                             </h1>
+                            {isDashboard && isWorthy && <span
+                                onClick={() => {
+                                    setModelOpen(true)
+                                    handleClickOpen()
+                                }}
+                                className={classNames(
+                                    'bg-red-600 text-white',
+                                    'rounded-md px-3 py-2 text-sm font-medium  flex items-center mt-5 relative bottom-4 text-center cursor-pointer w-max'
+                                )}>Add Channel
+                            </span>}
                         </div>
                     </header>
                     <main>
                         <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
+                            <>
+                                <SimpleModal
+                                             open={open}
+                                             onClose={handleClose}>
+                                    <div>
+                                        asdasdada
+                                    </div>
+
+                                </SimpleModal>
+
+                            </>
                             <Outlet/>
                         </div>
                     </main>

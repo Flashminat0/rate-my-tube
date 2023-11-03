@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react'
 
 import {CheckCircleIcon} from '@heroicons/react/20/solid'
-import {useLocation} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import {ref as dbRef} from "@firebase/database";
 import {firebaseDatabase} from "../../firebase.ts";
 import {child, get, set} from "firebase/database";
@@ -36,6 +36,8 @@ const tiers = [
     },
 ]
 const Pricing = () => {
+    const navigate = useNavigate()
+
     const [email, setEmail] = useState('')
 
     useEffect(() => {
@@ -48,16 +50,19 @@ const Pricing = () => {
 
             const userRef = dbRef(firebaseDatabase, 'users/' + emailID);
 
-            get(child(userRef, `/`)).then(async (snapshot) => {
-                if (snapshot.exists()) {
-                    await set(userRef, {
-                        ...snapshot.val(),
-                        plan: plan
-                    });
-                } else {
+            get(child(userRef, `/`))
+                .then(async (snapshot) => {
+                    if (snapshot.exists()) {
+                        await set(userRef, {
+                            ...snapshot.val(),
+                            plan: plan
+                        });
 
-                }
-            })
+                        navigate('/dashboard')
+                    } else {
+
+                    }
+                })
         }
     }
 

@@ -348,6 +348,7 @@ const Layout = () => {
                 addChannelToUser(channelID)
 
                 setChannelID('')
+                handleClose()
 
             } else {
                 return

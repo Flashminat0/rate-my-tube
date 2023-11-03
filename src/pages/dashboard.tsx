@@ -1,11 +1,12 @@
 import ReactApexChart from 'react-apexcharts'
-import {ApexOptions} from "apexcharts";
 import React, {useEffect, useState} from "react";
 import {ref as dbRef} from "@firebase/database";
 import {firebaseDatabase} from "../../firebase.ts";
 import {child, get, onValue} from "firebase/database";
+import axios from "axios";
 
 interface CHANNEL {
+    channelName: string,
     name: string,
     ready: boolean,
     data: {
@@ -51,6 +52,11 @@ const Dashboard = () => {
             },
             xaxis: {
                 categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep"],
+            }, yaxis: {
+                min: 0,
+                max: 100,
+                decimalsInFloat: 0,
+                tickAmount: 5
             }
         },
 
@@ -92,6 +98,12 @@ const Dashboard = () => {
             },
             xaxis: {
                 categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep"],
+            },
+            yaxis: {
+                min: 0,
+                max: 100,
+                decimalsInFloat: 0,
+                tickAmount: 5
             }
         },
 
@@ -132,6 +144,12 @@ const Dashboard = () => {
             },
             xaxis: {
                 categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep"],
+            },
+            yaxis: {
+                min: 0,
+                max: 100,
+                decimalsInFloat: 0,
+                tickAmount: 5
             }
         },
 
@@ -172,6 +190,12 @@ const Dashboard = () => {
             },
             xaxis: {
                 categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep"],
+            },
+            yaxis: {
+                min: 0,
+                max: 100,
+                decimalsInFloat: 0,
+                tickAmount: 5
             }
         },
     });
@@ -222,7 +246,7 @@ const Dashboard = () => {
 
         const channelRef = dbRef(firebaseDatabase, 'channels/');
 
-        onValue(channelRef, (snapshot) => {
+        onValue(channelRef, async (snapshot) => {
             const data = snapshot.val();
             if (snapshot.exists()) {
                 const tempChannels: CHANNEL[] = []; // Temporary array to hold the channels
@@ -231,6 +255,7 @@ const Dashboard = () => {
 
                 Object.keys(data).map((key, index) => {
                     const convertingChannel: CHANNEL = {
+                        channelName: key,
                         name: key,
                         ready: data[key].ready,
                         data: data[key].data,
@@ -258,9 +283,17 @@ const Dashboard = () => {
     // useEffect that updates the chart states based on selectedChannel
     useEffect(() => {
         if (selectedChannel) {
+
+            const percentageData1 = selectedChannel.data[0].data.map((value, index) => {
+                return value * 100
+            })
+
             setState1(prevState => ({
                 ...prevState,
-                series: [selectedChannel.data[0]],
+                series: [{
+                    name: "Percentage",
+                    data: percentageData1 as number[]
+                }],
                 options: {
                     ...prevState.options,
                     title: {
@@ -269,9 +302,17 @@ const Dashboard = () => {
                     }
                 }
             }));
+
+            const percentageData2 = selectedChannel.data[1].data.map((value, index) => {
+                return value * 100
+            })
+
             setState2(prevState => ({
                 ...prevState,
-                series: [selectedChannel.data[1]],
+                series: [{
+                    name: "Percentage",
+                    data: percentageData2 as number[]
+                }],
                 options: {
                     ...prevState.options,
                     title: {
@@ -280,9 +321,18 @@ const Dashboard = () => {
                     }
                 }
             }));
+
+
+            const percentageData3 = selectedChannel.data[2].data.map((value, index) => {
+                return value * 100
+            })
+
             setState3(prevState => ({
                 ...prevState,
-                series: [selectedChannel.data[2]],
+                series: [{
+                    name: "Percentage",
+                    data: percentageData3 as number[]
+                }],
                 options: {
                     ...prevState.options,
                     title: {
@@ -291,9 +341,17 @@ const Dashboard = () => {
                     }
                 }
             }));
+
+            const percentageData4 = selectedChannel.data[3].data.map((value, index) => {
+                return value * 100
+            })
+
             setState4(prevState => ({
                 ...prevState,
-                series: [selectedChannel.data[3]],
+                series: [{
+                    name: "Percentage",
+                    data: percentageData4 as number[]
+                }],
                 options: {
                     ...prevState.options,
                     title: {
@@ -305,6 +363,34 @@ const Dashboard = () => {
         }
     }, [selectedChannel]);
 
+    const [channelNames, setChannelNames] = useState({});
+
+    useEffect(() => {
+        // Fetch channel names when the component mounts
+        const fetchChannelNames = async () => {
+            let names = {};
+            for (let channel of channels) {
+                names[channel.name] = await channelIDtoName(channel.name);
+            }
+            setChannelNames(names);
+        };
+
+        fetchChannelNames();
+    }, [channels]);
+
+
+    const channelIDtoName = async (channelID) => {
+        try {
+            const res = await axios.post('http://34.224.212.94:8080/get-name', {
+                "channel_id": channelID
+            });
+            return res.data;
+        } catch (error) {
+            console.error("Error fetching channel name:", error);
+            return channelID; // Return channelID as fallback
+        }
+    };
+
 
     return (
         <div>
@@ -312,14 +398,16 @@ const Dashboard = () => {
                 {channels.length > 0 && <header className="bg-white shadow">
                     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 flex space-x-1">
                         {channels.map((channel, index) => {
-                            return <span
-                                onClick={() => {
-                                    setSelectedChannel(channel)
-                                }}
-                                key={index}
-                                className=" cursor-pointer inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">
-                                {channel.name}
-                            </span>
+                            return (
+                                <span
+                                    onClick={() => {
+                                        setSelectedChannel(channel)
+                                    }}
+                                    key={index}
+                                    className="cursor-pointer inline-flex items-center rounded-md bg-red-50 px-2 py-1 text-xs font-medium text-red-700 ring-1 ring-inset ring-red-600/10">
+                            {channelNames[channel.name]}
+                        </span>
+                            )
                         })}
                     </div>
                 </header>}
